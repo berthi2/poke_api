@@ -50,6 +50,16 @@ fetch(`https://pokeapi.co/api/v2/pokemon/?limit=100`)
 const tableBody = document.querySelector('#tableBody');
 const myModal = new bootstrap.Modal(document.getElementById('modalPokemonData'));
 
+let historialStorage = JSON.parse(localStorage.getItem('historial'));
+
+let historialPokemones = [];
+
+if(historialStorage){
+    historialPokemones = historialStorage;
+}
+
+
+
 function renderTabla(){
     fetch(`https://pokeapi.co/api/v2/pokemon/?limit=100`)
     .then(response => response.json())
@@ -89,7 +99,6 @@ function renderTabla(){
                         return elemento.ability.name;
                     })
 
- 
 
                     cuerpoModal.innerHTML = `
                         <img src="${data.sprites.front_default}" class="w-25 mx-auto d-block" alt="">
@@ -98,6 +107,18 @@ function renderTabla(){
                         <p class="text-center"><strong>Habilidades: </strong> ${habilidades.join(', ')}</p>
                     `;
                     myModal.show();
+
+
+                    if(!historialPokemones.find((elemento) => elemento.name == data.name)){
+                        historialPokemones.push({
+                            name: data.name,
+                            img: data.sprites.front_default
+                        })
+                    }
+
+                    console.log(historialPokemones)
+
+                    localStorage.setItem('historial', JSON.stringify(historialPokemones));
                 })
 
             })
